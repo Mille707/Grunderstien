@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ressursbibliotek | Gründerstien</title>
+  <meta name="description" content="Alt du trenger samlet på ett sted — lenker til norske tjenester, støtteordninger og verktøy for gründere." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .resources-hero {
+      background: linear-gradient(135deg, #0e1b2e 0%, #1B2B4B 100%);
+      color: #fff;
+      padding: 72px 0;
+    }
+    .resources-hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 16px; letter-spacing: -.5px; }
+    .resources-hero p { font-size: 1.05rem; color: rgba(255,255,255,.8); max-width: 560px; }
+
+    /* FILTER BAR */
+    .filter-bar {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+    .filter-inner {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-inner::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      padding: 16px 20px;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      white-space: nowrap;
+      transition: all var(--transition);
+    }
+    .filter-btn:hover { color: var(--text); background: var(--bg-soft); }
+    .filter-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* RESOURCE CARDS */
+    .resource-category {
+      padding: 56px 0 16px;
+      scroll-margin-top: 120px;
+    }
+    .resource-category h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .resource-category p {
+      font-size: .92rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .resource-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .resource-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all var(--transition);
+    }
+    .resource-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+      transform: translateY(-3px);
+      color: inherit;
+    }
+
+    .resource-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .resource-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .resource-info { flex: 1; }
+    .resource-name {
+      font-weight: 700;
+      font-size: .98rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .resource-name .ext-icon {
+      color: var(--text-muted);
+      font-size: .75rem;
+    }
+    .resource-type {
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .resource-desc {
+      font-size: .87rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .resource-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .resource-tag {
+      font-size: .72rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--bg-soft);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0 0;
+    }
+
+    /* HIGHLIGHT CARD */
+    .highlight-banner {
+      background: linear-gradient(135deg, #1B2B4B, #2a4070);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin: 48px 0;
+    }
+    .highlight-banner-icon { font-size: 3.5rem; flex-shrink: 0; }
+    .highlight-banner h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .highlight-banner p { font-size: .95rem; opacity: .85; margin-bottom: 20px; }
+
+    @media (max-width: 700px) {
+      .highlight-banner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">Gründer<span>stien</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Hjem</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="guide.html">Guide</a></li>
+      <li><a href="ressurser.html" class="active">Ressurser</a></li>
+      <li><a href="quiz.html" class="nav-cta">Start nå →</a></li>
+    </ul>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Meny">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<section class="resources-hero">
+  <div class="container">
+    <div class="badge badge-orange mb-16">Ressursbibliotek</div>
+    <h1>Alt du trenger — samlet</h1>
+    <p>Vi har samlet de viktigste norske tjenestene, verktøyene og støtteordningene slik at du slipper å lete.</p>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="container filter-inner">
+    <button class="filter-btn active" onclick="filterSection('alle', this)">Alle</button>
+    <button class="filter-btn" onclick="filterSection('myndigheter', this)">Myndigheter</button>
+    <button class="filter-btn" onclick="filterSection('finansiering', this)">Finansiering</button>
+    <button class="filter-btn" onclick="filterSection('regnskap', this)">Regnskap</button>
+    <button class="filter-btn" onclick="filterSection('veiledning', this)">Veiledning</button>
+    <button class="filter-btn" onclick="filterSection('verktoy', this)">Verktøy</button>
+    <button class="filter-btn" onclick="filterSection('nettverk', this)">Nettverk</button>
+  </div>
+</div>
+
+<div style="background: var(--bg-soft); padding-bottom: 80px;">
+<div class="container">
+
+  <!-- MYNDIGHETER -->
+  <div class="resource-category" id="myndigheter" data-category="myndigheter">
+    <h2>🏛️ Myndigheter og offentlige tjenester</h2>
+    <p>De offisielle kanalene du som næringsdrivende må forholde deg til.</p>
+    <div class="resource-cards">
+
+      <a href="https://www.altinn.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8f5e9">🏢</div>
+          <div class="resource-info">
+            <div class="resource-name">Altinn <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8f5e9;color:#15803d;">Offentlig tjeneste</span>
+          </div>
+        </div>
+        <p class="resource-desc">Norges digitale plattform for næringslivet. Her registrerer du bedriften, leverer skattemeldinger, søker tilskudd og kommuniserer med myndighetene.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Registrering</span>
+          <span class="resource-tag">Skattemelding</span>
+          <span class="resource-tag">MVA</span>
+        </div>
+      </a>
+
+      <a href="https://www.brreg.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8ecf4">📜</div>
+          <div class="resource-info">
+            <div class="resource-name">Brønnøysundregistrene <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8ecf4;color:#1B2B4B;">Offentlig tjeneste</span>
+          </div>
+        </div>
+        <p class="resource-desc">Her registreres alle norske virksomheter. Du kan søke opp bedrifter, sjekke organisasjonsnummer og registrere endringer i selskapet ditt.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Enhetsregisteret</span>
+          <span class="resource-tag">Foretaksregisteret</span>
+        </div>
+      </a>
+
+      <a href="https://www.skatteetaten.no/bedrift-og-organisasjon/" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fff7ed">💼</div>
+          <div class="resource-info">
+            <div class="resource-name">Skatteetaten <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fff7ed;color:#c2410c;">Offentlig tjeneste</span>
+          </div>
+        </div>
+        <p class="resource-desc">Alt om skatt for næringsdrivende. Skattemelding for bedrifter, arbeidsgiveravgift, lønnsinnberetning og informasjon om fradrag.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Skatt</span>
+          <span class="resource-tag">MVA</span>
+          <span class="resource-tag">Arbeidsgivere</span>
+        </div>
+      </a>
+
+      <a href="https://www.nav.no/no/bedrift" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f0fdf4">🤝</div>
+          <div class="resource-info">
+            <div class="resource-name">NAV Bedrift <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f0fdf4;color:#15803d;">Offentlig tjeneste</span>
+          </div>
+        </div>
+        <p class="resource-desc">Informasjon om arbeidsgivers plikter, rekrutteringsstøtte og tilskuddsordninger. Viktig hvis du planlegger å ansette noen.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Ansettelse</span>
+          <span class="resource-tag">Tilskudd</span>
+          <span class="resource-tag">Arbeidsgivere</span>
+        </div>
+      </a>
+
+      <a href="https://www.mattilsynet.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fef9c3">🍽️</div>
+          <div class="resource-info">
+            <div class="resource-name">Mattilsynet <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fef9c3;color:#854d0e;">Offentlig tjeneste</span>
+          </div>
+        </div>
+        <p class="resource-desc">Relevant for deg som driver med mat, drikke, restauranter eller matproduksjon. Her søker du om godkjenninger og finner regelverk.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Mat</span>
+          <span class="resource-tag">Restaurant</span>
+          <span class="resource-tag">Tillatelser</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- FINANSIERING -->
+  <div class="resource-category" id="finansiering" data-category="finansiering">
+    <h2>💰 Finansiering og støtteordninger</h2>
+    <p>Norske støtteordninger, tilskudd og finansieringskilder for gründere.</p>
+    <div class="resource-cards">
+
+      <a href="https://www.innovasjonnorge.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f0fdf4">🚀</div>
+          <div class="resource-info">
+            <div class="resource-name">Innovasjon Norge <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f0fdf4;color:#15803d;">Finansiering</span>
+          </div>
+        </div>
+        <p class="resource-desc">Norges viktigste støtteaktør for gründere. Tilbyr etablerertilskudd, oppstartslån, markedsrådgivning og internasjonaliseringsstøtte.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Tilskudd</span>
+          <span class="resource-tag">Lån</span>
+          <span class="resource-tag">Rådgivning</span>
+        </div>
+      </a>
+
+      <a href="https://www.skattefunn.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8ecf4">🔬</div>
+          <div class="resource-info">
+            <div class="resource-name">Skattefunn <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8ecf4;color:#1B2B4B;">Skattefradrag</span>
+          </div>
+        </div>
+        <p class="resource-desc">Statlig ordning som gir skattefradrag for bedrifter som investerer i forskning og utvikling (FoU). Opp til 19–20% fradrag av FoU-kostnader.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">FoU</span>
+          <span class="resource-tag">Skattefradrag</span>
+          <span class="resource-tag">Teknologi</span>
+        </div>
+      </a>
+
+      <a href="https://www.enova.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#ecfdf5">🌿</div>
+          <div class="resource-info">
+            <div class="resource-name">Enova <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#ecfdf5;color:#064e3b;">Støtte</span>
+          </div>
+        </div>
+        <p class="resource-desc">Støtte til bedrifter som jobber med energieffektivisering, fornybar energi og klimavennlig teknologi. Interessant for grønne gründere.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Grønn</span>
+          <span class="resource-tag">Energi</span>
+          <span class="resource-tag">Klima</span>
+        </div>
+      </a>
+
+      <a href="https://www.forskningsradet.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f5f3ff">🎓</div>
+          <div class="resource-info">
+            <div class="resource-name">Forskningsrådet <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f5f3ff;color:#7c3aed;">Støtte</span>
+          </div>
+        </div>
+        <p class="resource-desc">Finansierer forskning og innovasjon i norsk næringsliv. FORNY2020 og BIA-programmet er spesielt relevante for teknologibedrifter.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Forskning</span>
+          <span class="resource-tag">Innovasjon</span>
+          <span class="resource-tag">Teknologi</span>
+        </div>
+      </a>
+
+      <a href="https://www.siva.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fef3c7">🏗️</div>
+          <div class="resource-info">
+            <div class="resource-name">SIVA <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fef3c7;color:#92400e;">Nettverk</span>
+          </div>
+        </div>
+        <p class="resource-desc">Selskapet for industrivekst — driver inkubatorer og næringshager over hele Norge. Finn nærmeste inkubator for subsidiert kontorplass og mentoring.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Inkubator</span>
+          <span class="resource-tag">Næringshage</span>
+          <span class="resource-tag">Kontorplass</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- REGNSKAP OG ØKONOMI -->
+  <div class="resource-category" id="regnskap" data-category="regnskap">
+    <h2>📊 Regnskap og økonomi</h2>
+    <p>Verktøy for å holde orden på tallene — fra fakturering til årsregnskap.</p>
+    <div class="resource-cards">
+
+      <a href="https://www.fiken.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#ecfdf5">📗</div>
+          <div class="resource-info">
+            <div class="resource-name">Fiken <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#ecfdf5;color:#15803d;">Regnskap</span>
+          </div>
+        </div>
+        <p class="resource-desc">Norsk regnskapsystem designet for gründere og små bedrifter. Enkel fakturering, automatisk bankimport og innebygde MVA-meldinger. Fra 149 kr/mnd.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">ENK</span>
+          <span class="resource-tag">AS</span>
+          <span class="resource-tag">Fakturering</span>
+        </div>
+      </a>
+
+      <a href="https://www.tripletex.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8ecf4">📘</div>
+          <div class="resource-info">
+            <div class="resource-name">Tripletex <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8ecf4;color:#1B2B4B;">Regnskap</span>
+          </div>
+        </div>
+        <p class="resource-desc">Kraftig norsk regnskapssystem med lønn, prosjektstyring og avansert rapportering. Bra for bedrifter som vokser og trenger mer funksjonalitet.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Lønn</span>
+          <span class="resource-tag">Prosjekt</span>
+          <span class="resource-tag">Rapportering</span>
+        </div>
+      </a>
+
+      <a href="https://www.visma.no/eaccounting/" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fff7ed">📙</div>
+          <div class="resource-info">
+            <div class="resource-name">Visma eAccounting <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fff7ed;color:#c2410c;">Regnskap</span>
+          </div>
+        </div>
+        <p class="resource-desc">Del av Vismas store produktfamilie. God integrasjon med banker og offentlige tjenester. Passer for alle selskapsformer.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Alle størrelser</span>
+          <span class="resource-tag">Integrasjoner</span>
+        </div>
+      </a>
+
+      <a href="https://www.24sevenoffice.com" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f5f3ff">🖥️</div>
+          <div class="resource-info">
+            <div class="resource-name">24SevenOffice <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f5f3ff;color:#7c3aed;">Alt-i-ett</span>
+          </div>
+        </div>
+        <p class="resource-desc">Kombinerer regnskap, CRM, prosjektstyring og lønn i ett system. Passer for bedrifter som vil ha alt samlet.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">CRM</span>
+          <span class="resource-tag">Prosjekt</span>
+          <span class="resource-tag">Alt-i-ett</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- VEILEDNING -->
+  <div class="resource-category" id="veiledning" data-category="veiledning">
+    <h2>🎓 Veiledning og opplæring</h2>
+    <p>Steder der du kan få hjelp, mentoring og kompetanseheving som gründer.</p>
+    <div class="resource-cards">
+
+      <a href="https://www.etablerertjenesten.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f0fdf4">🌱</div>
+          <div class="resource-info">
+            <div class="resource-name">Etablerertjenesten <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f0fdf4;color:#15803d;">Veiledning</span>
+          </div>
+        </div>
+        <p class="resource-desc">Gratis veiledning for nye gründere i Norge, tilgjengelig i alle fylker. Hjelper deg med forretningsplan, finansiering og markedsføring.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Gratis</span>
+          <span class="resource-tag">Alle fylker</span>
+          <span class="resource-tag">Mentoring</span>
+        </div>
+      </a>
+
+      <a href="https://www.nho.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8ecf4">🏢</div>
+          <div class="resource-info">
+            <div class="resource-name">NHO – Næringslivets Hovedorg. <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8ecf4;color:#1B2B4B;">Organisasjon</span>
+          </div>
+        </div>
+        <p class="resource-desc">Norges største næringslivsorganisasjon. Tilbyr rådgivning, kurs, nettverksarrangementer og politisk påvirkning for norske bedrifter.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Nettverk</span>
+          <span class="resource-tag">Rådgivning</span>
+          <span class="resource-tag">Kurs</span>
+        </div>
+      </a>
+
+      <a href="https://www.grunner.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fff7ed">🚀</div>
+          <div class="resource-info">
+            <div class="resource-name">Ungt Entreprenørskap <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fff7ed;color:#c2410c;">Opplæring</span>
+          </div>
+        </div>
+        <p class="resource-desc">Opplæring i entreprenørskap for unge. Tilbyr kurs, workshops og programmet "Gründerskolen" for de som vil lære å starte bedrift.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Unge</span>
+          <span class="resource-tag">Kurs</span>
+          <span class="resource-tag">Workshops</span>
+        </div>
+      </a>
+
+      <a href="https://www.cofounder.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f5f3ff">🤝</div>
+          <div class="resource-info">
+            <div class="resource-name">Norsk Gründernettverk <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f5f3ff;color:#7c3aed;">Nettverk</span>
+          </div>
+        </div>
+        <p class="resource-desc">Plattform for norske gründere til å koble seg til likesinnede, finne medinvestorer, partnere og ressurser. Gratis å bli med.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Nettverk</span>
+          <span class="resource-tag">Medinvestorer</span>
+          <span class="resource-tag">Gratis</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- VERKTØY -->
+  <div class="resource-category" id="verktoy" data-category="verktoy">
+    <h2>🛠️ Digitale verktøy</h2>
+    <p>Praktiske verktøy som gjør hverdagen enklere for deg som gründer.</p>
+    <div class="resource-cards">
+
+      <a href="https://www.hubspot.com/products/crm" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fff7ed">🎯</div>
+          <div class="resource-info">
+            <div class="resource-name">HubSpot CRM <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fff7ed;color:#c2410c;">CRM</span>
+          </div>
+        </div>
+        <p class="resource-desc">Gratis CRM-system for å holde styr på kunder og leads. Enkel å sette opp, og gratisnivået holder for de fleste startups i begynnelsen.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Gratis</span>
+          <span class="resource-tag">CRM</span>
+          <span class="resource-tag">Salg</span>
+        </div>
+      </a>
+
+      <a href="https://www.canva.com" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f0fdf4">🎨</div>
+          <div class="resource-info">
+            <div class="resource-name">Canva <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f0fdf4;color:#15803d;">Design</span>
+          </div>
+        </div>
+        <p class="resource-desc">Enkel og kraftig designplattform. Lag profesjonelle logoer, presentasjoner, sosiale medier-innhold og markedsmateriell uten designbakgrunn.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Design</span>
+          <span class="resource-tag">Markedsføring</span>
+          <span class="resource-tag">Gratis-nivå</span>
+        </div>
+      </a>
+
+      <a href="https://www.notion.so" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f9fafb">📝</div>
+          <div class="resource-info">
+            <div class="resource-name">Notion <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f9fafb;color:#374151;">Produktivitet</span>
+          </div>
+        </div>
+        <p class="resource-desc">Alt-i-ett notat- og prosjektverktøy. Perfekt for å organisere forretningsplanen, oppgavelister, møtereferater og intern dokumentasjon.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Prosjektstyring</span>
+          <span class="resource-tag">Notat</span>
+          <span class="resource-tag">Gratis</span>
+        </div>
+      </a>
+
+      <a href="https://www.mailchimp.com" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fef9c3">📧</div>
+          <div class="resource-info">
+            <div class="resource-name">Mailchimp <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fef9c3;color:#854d0e;">E-post</span>
+          </div>
+        </div>
+        <p class="resource-desc">Verdens mest populære e-postmarkedsføringverktøy. Send nyhetsbrev, automatiserte e-poster og kampanjer. Gratis opp til 500 abonnenter.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">E-postmarkedsføring</span>
+          <span class="resource-tag">Automatisering</span>
+        </div>
+      </a>
+
+      <a href="https://www.slack.com" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f5f3ff">💬</div>
+          <div class="resource-info">
+            <div class="resource-name">Slack <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f5f3ff;color:#7c3aed;">Kommunikasjon</span>
+          </div>
+        </div>
+        <p class="resource-desc">Profesjonell meldingsplattform for team. Erstatter e-post for intern kommunikasjon og organiserer diskusjoner i kanaler. Gratis versjon tilgjengelig.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Team</span>
+          <span class="resource-tag">Kommunikasjon</span>
+          <span class="resource-tag">Integrasjoner</span>
+        </div>
+      </a>
+
+      <a href="https://stripe.com" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8ecf4">💳</div>
+          <div class="resource-info">
+            <div class="resource-name">Stripe <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8ecf4;color:#1B2B4B;">Betaling</span>
+          </div>
+        </div>
+        <p class="resource-desc">Markedsledende betalingsplattform for nettbutikk og abonnementstjenester. Enkel å integrere, konkurransedyktige gebyrer og utmerket dokumentasjon.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Nettbetaling</span>
+          <span class="resource-tag">Abonnement</span>
+          <span class="resource-tag">Nettbutikk</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- NETTVERK -->
+  <div class="resource-category" id="nettverk" data-category="nettverk">
+    <h2>🌐 Nettverk og miljø</h2>
+    <p>Steder der du kan møte andre gründere, investorer og ressurspersoner.</p>
+    <div class="resource-cards">
+
+      <a href="https://startupnorway.com" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8ecf4">🇳🇴</div>
+          <div class="resource-info">
+            <div class="resource-name">Startup Norway <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8ecf4;color:#1B2B4B;">Nettverk</span>
+          </div>
+        </div>
+        <p class="resource-desc">Norges ledende gründernettverk med events, mentorer og tilgang til investorer. Arrangerer Startup Norway Summit og andre nasjonale arrangementer.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Events</span>
+          <span class="resource-tag">Investorer</span>
+          <span class="resource-tag">Mentorer</span>
+        </div>
+      </a>
+
+      <a href="https://www.startuplab.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#f5f3ff">🔬</div>
+          <div class="resource-info">
+            <div class="resource-name">StartupLab <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#f5f3ff;color:#7c3aed;">Inkubator</span>
+          </div>
+        </div>
+        <p class="resource-desc">Norges ledende teknologiinkubator, tilknyttet Universitetet i Oslo. Gir kontorplass, mentoring og tilgang til investornettverk for tech-startups.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Oslo</span>
+          <span class="resource-tag">Teknologi</span>
+          <span class="resource-tag">Investorer</span>
+        </div>
+      </a>
+
+      <a href="https://www.nce.no" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#fff7ed">🌍</div>
+          <div class="resource-info">
+            <div class="resource-name">Norwegian Centres of Expertise <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#fff7ed;color:#c2410c;">Klynge</span>
+          </div>
+        </div>
+        <p class="resource-desc">Nasjonale næringsklynger der bedrifter samarbeider om innovasjon. Finnes i mange bransjer fra sjømat til fintech. Sjekk om din bransje har en klynge.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">Klynger</span>
+          <span class="resource-tag">Samarbeid</span>
+          <span class="resource-tag">Innovasjon</span>
+        </div>
+      </a>
+
+      <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="resource-card">
+        <div class="resource-card-top">
+          <div class="resource-logo" style="background:#e8ecf4">💼</div>
+          <div class="resource-info">
+            <div class="resource-name">LinkedIn <span class="ext-icon">↗</span></div>
+            <span class="resource-type" style="background:#e8ecf4;color:#1B2B4B;">Sosialt nettverk</span>
+          </div>
+        </div>
+        <p class="resource-desc">Verdens viktigste profesjonelle nettverksplattform. Uunnværlig for B2B-markedsføring, rekruttering, kunnskapsbygging og å finne investorer.</p>
+        <div class="resource-tags">
+          <span class="resource-tag">B2B</span>
+          <span class="resource-tag">Nettverk</span>
+          <span class="resource-tag">Markedsføring</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CTA BANNER -->
+  <div class="highlight-banner">
+    <div class="highlight-banner-icon">🧭</div>
+    <div>
+      <h3>Vet du ikke hvor du skal begynne?</h3>
+      <p>Ta vår gratis quiz og finn ut nøyaktig hvilke ressurser og steg som er mest relevante for din situasjon akkurat nå.</p>
+      <a href="quiz.html" class="btn btn-primary">Ta quizen — det tar 2 minutter</a>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">Gründer<span style="color:var(--accent)">stien</span></div>
+        <p>Vi hjelper norske gründere å komme fra idé til vellykket bedrift med konkret, steg-for-steg veiledning.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasjon</h4>
+        <ul>
+          <li><a href="index.html">Hjem</a></li>
+          <li><a href="quiz.html">Quiz</a></li>
+          <li><a href="guide.html">Guide</a></li>
+          <li><a href="ressurser.html">Ressurser</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Fasene</h4>
+        <ul>
+          <li><a href="guide.html#fase-1">Idé og validering</a></li>
+          <li><a href="guide.html#fase-2">Registrering</a></li>
+          <li><a href="guide.html#fase-3">Økonomi</a></li>
+          <li><a href="guide.html#fase-4">Markedsføring</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Nyttige lenker</h4>
+        <ul>
+          <li><a href="https://www.altinn.no" target="_blank" rel="noopener">Altinn</a></li>
+          <li><a href="https://www.innovasjonnorge.no" target="_blank" rel="noopener">Innovasjon Norge</a></li>
+          <li><a href="https://www.brreg.no" target="_blank" rel="noopener">Brønnøysundregistrene</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Gründerstien.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function filterSection(category, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const categories = document.querySelectorAll('.resource-category, hr.section-divider');
+    if (category === 'alle') {
+      categories.forEach(el => el.style.display = '');
+    } else {
+      document.querySelectorAll('.resource-category').forEach(el => {
+        el.style.display = el.dataset.category === category ? '' : 'none';
+      });
+      document.querySelectorAll('hr.section-divider').forEach(el => el.style.display = 'none');
+    }
+    window.scrollTo({ top: 120, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

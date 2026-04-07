@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Steg-for-steg guide | Gründerstien</title>
+  <meta name="description" content="Den komplette guiden fra idé til vellykket bedrift. Fire faser med konkrete oppgaver og forklaringer." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .guide-hero {
+      background: linear-gradient(135deg, #0e1b2e 0%, #1B2B4B 100%);
+      color: #fff;
+      padding: 72px 0;
+    }
+    .guide-hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 16px; letter-spacing: -.5px; }
+    .guide-hero p { font-size: 1.05rem; color: rgba(255,255,255,.8); max-width: 560px; }
+
+    /* PHASE NAV */
+    .phase-nav {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+    .phase-nav-inner {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .phase-nav-inner::-webkit-scrollbar { display: none; }
+    .phase-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 22px;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .phase-tab:hover { color: var(--text); background: var(--bg-soft); }
+    .phase-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .phase-tab .tab-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* PHASE SECTION */
+    .phase-section {
+      padding: 72px 0;
+      scroll-margin-top: 120px;
+    }
+    .phase-section:nth-child(even) { background: var(--bg-soft); }
+
+    .phase-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .phase-header-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .phase-header-content {}
+    .phase-label {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .phase-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -.4px;
+      margin-bottom: 10px;
+    }
+    .phase-header p { font-size: .98rem; color: var(--text-muted); line-height: 1.7; max-width: 600px; }
+
+    /* TASK ACCORDION */
+    .tasks-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .task-item {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color var(--transition);
+    }
+    .task-item.open { border-color: var(--phase-color); }
+    .task-item:hover { border-color: var(--phase-color); }
+
+    .task-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .task-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .task-title { flex: 1; font-weight: 600; font-size: .98rem; }
+    .task-badge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .task-chevron {
+      width: 20px; height: 20px;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+      color: var(--text-muted);
+    }
+    .task-item.open .task-chevron { transform: rotate(180deg); }
+
+    .task-body {
+      display: none;
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .task-item.open .task-body { display: block; }
+
+    .task-body p { font-size: .93rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 16px; }
+    .task-body p:last-child { margin-bottom: 0; }
+
+    .task-tip {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--phase-color);
+      padding: 12px 16px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: .88rem;
+      color: var(--text);
+      margin-top: 16px;
+    }
+    .task-tip strong { color: var(--phase-color); }
+
+    .task-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .task-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: .82rem;
+      font-weight: 600;
+      background: var(--bg-soft);
+      color: var(--primary);
+      border: 1px solid var(--border);
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .task-link:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .checklist { list-style: none; margin: 12px 0; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: .92rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before {
+      content: '→';
+      color: var(--phase-color);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* PHASE SUMMARY BOX */
+    .phase-summary {
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 40px;
+      border: 1px solid;
+    }
+    .phase-summary h4 { font-size: .95rem; font-weight: 700; margin-bottom: 12px; }
+    .phase-summary p { font-size: .88rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* CHECKLIST DONE */
+    .checkbox-wrapper { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .custom-checkbox {
+      width: 20px; height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      transition: all var(--transition);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .checkbox-wrapper input { display: none; }
+    .checkbox-wrapper input:checked + .custom-checkbox {
+      background: var(--success);
+      border-color: var(--success);
+    }
+    .checkbox-wrapper input:checked + .custom-checkbox::after {
+      content: '✓';
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+    .checkbox-wrapper span { font-size: .9rem; }
+    .checkbox-wrapper input:checked ~ span { text-decoration: line-through; color: var(--text-muted); }
+
+    @media (max-width: 700px) {
+      .phase-header { flex-direction: column; gap: 16px; }
+      .phase-header-icon { width: 56px; height: 56px; font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">Gründer<span>stien</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Hjem</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="guide.html" class="active">Guide</a></li>
+      <li><a href="ressurser.html">Ressurser</a></li>
+      <li><a href="quiz.html" class="nav-cta">Start nå →</a></li>
+    </ul>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Meny">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<section class="guide-hero">
+  <div class="container">
+    <div class="badge badge-orange mb-16">Steg-for-steg guide</div>
+    <h1>Din komplette gründerguide</h1>
+    <p>Fire faser som tar deg fra idé til vellykket bedrift. Klikk på hver oppgave for detaljert forklaring og konkrete råd.</p>
+  </div>
+</section>
+
+<!-- PHASE NAV -->
+<nav class="phase-nav">
+  <div class="container phase-nav-inner">
+    <a href="#fase-1" class="phase-tab active" onclick="setActiveTab(this)">
+      <span class="tab-num" style="background:#f5f3ff;color:#7c3aed;">1</span>
+      Idé og validering
+    </a>
+    <a href="#fase-2" class="phase-tab" onclick="setActiveTab(this)">
+      <span class="tab-num" style="background:#e8ecf4;color:#1B2B4B;">2</span>
+      Registrering
+    </a>
+    <a href="#fase-3" class="phase-tab" onclick="setActiveTab(this)">
+      <span class="tab-num" style="background:#f0fdf4;color:#15803d;">3</span>
+      Økonomi
+    </a>
+    <a href="#fase-4" class="phase-tab" onclick="setActiveTab(this)">
+      <span class="tab-num" style="background:#fff7ed;color:#c2410c;">4</span>
+      Markedsføring
+    </a>
+  </div>
+</nav>
+
+<!-- ======================== FASE 1 ======================== -->
+<section class="phase-section phase-1" id="fase-1">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-header-icon" style="background:#f5f3ff;">💡</div>
+      <div class="phase-header-content">
+        <div class="phase-label" style="color:#7c3aed;">Fase 1</div>
+        <h2>Idé og validering</h2>
+        <p>Den aller viktigste fasen. Her handler det om å finne ut om idéen din faktisk løser et problem folk vil betale for — <em>før</em> du investerer masse tid og penger. De fleste feilslår fordi de hopper over dette steget.</p>
+      </div>
+    </div>
+
+    <div class="tasks-list">
+
+      <div class="task-item" style="--phase-color:#7c3aed">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f5f3ff;color:#7c3aed;">1</div>
+          <div class="task-title">Definer problemet du løser</div>
+          <span class="task-badge" style="background:#f5f3ff;color:#7c3aed;">Grunnleggende</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Mange gründere er forelsket i løsningen sin, ikke problemet. Det er en farlig felle. Start alltid med problemet: Hvem har det? Hvor vondt gjør det? Hva bruker folk i dag for å løse det?</p>
+          <p>Skriv ned én setning som beskriver problemet: <em>"[Målgruppen] sliter med [problem] fordi [årsak], og dette koster dem [konsekvens]."</em></p>
+          <div class="task-tip"><strong>Tips:</strong> Hvis du ikke kan forklare problemet på én setning uten å nevne produktet ditt, er du ikke klar ennå.</div>
+          <ul class="checklist">
+            <li>Skriv problemsetningen</li>
+            <li>Identifiser hvem som har problemet verst</li>
+            <li>Finn ut hva de bruker i dag som alternativ</li>
+            <li>Estimer hva problemet koster dem (penger eller tid)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#7c3aed">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f5f3ff;color:#7c3aed;">2</div>
+          <div class="task-title">Kartlegg målgruppen din</div>
+          <span class="task-badge" style="background:#f5f3ff;color:#7c3aed;">Viktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>«Alle» er ikke en målgruppe. Jo smalere du definerer hvem du retter deg mot, jo lettere er det å nå dem, forstå dem og selge til dem.</p>
+          <p>Lag en enkel kundeprofil: Alder, yrke, interesser, typiske utfordringer og hva de bruker penger på. Gi personen et navn og et bilde — det hjelper deg å holde dem i tankene.</p>
+          <div class="task-tip"><strong>Eksempel:</strong> Ikke "small bedrifter", men "regnskapsbyråer med 5–20 ansatte som bruker mye tid på manuell fakturering".</div>
+          <ul class="checklist">
+            <li>Lag 1–2 detaljerte kundeprofiler</li>
+            <li>Finn steder der målgruppen samles (forum, LinkedIn, bransjeorganisasjoner)</li>
+            <li>Identifiser hvem som bestemmer og hvem som betaler</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#7c3aed">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f5f3ff;color:#7c3aed;">3</div>
+          <div class="task-title">Gjennomfør kundeintervjuer</div>
+          <span class="task-badge" style="background:#f5f3ff;color:#7c3aed;">Kritisk</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Det eneste som virkelig teller er å snakke med ekte potensielle kunder. Ikke spør familie og venner — de er for snille. Finn folk i målgruppen og book 20–30 minutters samtaler.</p>
+          <p><strong>Gode spørsmål å stille:</strong></p>
+          <ul class="checklist">
+            <li>«Fortell meg om sist gang du møtte dette problemet»</li>
+            <li>«Hva gjør du i dag for å løse det?»</li>
+            <li>«Hva er det verste med dagens løsning?»</li>
+            <li>«Hva ville den perfekte løsningen se ut som?»</li>
+            <li>«Hva ville du betalt for det?»</li>
+          </ul>
+          <div class="task-tip"><strong>Viktig:</strong> Lytt mer enn du snakker. Presenter IKKE løsningen din i intervjuet — du vil avdekke sannheten, ikke validere egen idé.</div>
+          <div class="task-links">
+            <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="task-link">🔗 Finn intervjupersoner på LinkedIn</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#7c3aed">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f5f3ff;color:#7c3aed;">4</div>
+          <div class="task-title">Analyser konkurrentene</div>
+          <span class="task-badge" style="background:#f5f3ff;color:#7c3aed;">Viktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Konkurrenter er ikke bare fiendens — de er bevis på at det finnes et marked. Studer dem nøye: Hva er de gode på? Hva klager kundene på? Hvor er det åpninger?</p>
+          <p>Se på anmeldelser på Trustpilot, Google og bransjesider. Les kommentarfelt og diskusjoner der målgruppen din er aktiv.</p>
+          <ul class="checklist">
+            <li>Identifiser de 3–5 viktigste konkurrentene</li>
+            <li>Les kundeanmeldelsene deres — spesielt de negative</li>
+            <li>Finn ut hva du kan gjøre bedre enn dem</li>
+            <li>Definer din unike fordel (USP)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#7c3aed">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f5f3ff;color:#7c3aed;">5</div>
+          <div class="task-title">Test idéen med en MVP</div>
+          <span class="task-badge" style="background:#f5f3ff;color:#7c3aed;">Avansert</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>MVP (Minimum Viable Product) er den enkleste versjonen av produktet ditt som kan teste den viktigste hypotesen. Det trenger ikke å være teknisk — det kan være en enkel landing page, en manuell demo, eller et tilbud du sender ut på e-post.</p>
+          <p><strong>Hva som teller som validering:</strong></p>
+          <ul class="checklist">
+            <li>Noen legger inn e-postadressen sin for å høre mer</li>
+            <li>Noen forhåndsbetaler eller signerer en intensjonsavtale</li>
+            <li>Du får 3–5 betalende kunder fra et manuelt tilbud</li>
+          </ul>
+          <div class="task-tip"><strong>Huskeregel:</strong> Hvis ingen vil betale for å løse problemet — selv ikke med rabatt — er problemet kanskje ikke stort nok.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FASE 2 ======================== -->
+<section class="phase-section phase-2" id="fase-2">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-header-icon" style="background:#e8ecf4;">📋</div>
+      <div class="phase-header-content">
+        <div class="phase-label" style="color:#1B2B4B;">Fase 2</div>
+        <h2>Registrering og det formelle</h2>
+        <p>Du har validert idéen. Nå er det tid for å gjøre bedriften offisiell. Denne fasen handler om å velge riktig selskapsform, registrere deg hos myndighetene og forstå de grunnleggende juridiske og administrative kravene.</p>
+      </div>
+    </div>
+
+    <div class="tasks-list">
+
+      <div class="task-item" style="--phase-color:#1B2B4B">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#e8ecf4;color:#1B2B4B;">1</div>
+          <div class="task-title">Velg riktig selskapsform</div>
+          <span class="task-badge" style="background:#e8ecf4;color:#1B2B4B;">Kritisk</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>De to vanligste formene i Norge er <strong>ENK (Enkeltpersonforetak)</strong> og <strong>AS (Aksjeselskap)</strong>. Valget påvirker skatt, ansvar og administrasjon.</p>
+          <p><strong>ENK passer hvis:</strong> Du er alene, har lav risiko, tjener under ca. 500 000 kr/år, og vil ha minimal administrasjon. Du er personlig ansvarlig for gjeld.</p>
+          <p><strong>AS passer hvis:</strong> Du har investorer, medgründere, høy risiko, ønsker å skille privat og bedriftsøkonomi, eller planlegger å ansette folk. Krever minst 30 000 kr i aksjekapital.</p>
+          <div class="task-tip"><strong>Tips:</strong> Usikker? Start gjerne med ENK og konverter til AS når du vokser. Prosessen er enkel via Altinn.</div>
+          <div class="task-links">
+            <a href="https://www.altinn.no/starte-og-drive/starte/valg-av-selskapsform/" target="_blank" rel="noopener" class="task-link">🔗 Altinn: Velg selskapsform</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#1B2B4B">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#e8ecf4;color:#1B2B4B;">2</div>
+          <div class="task-title">Registrer bedriften i Brønnøysundregistrene</div>
+          <span class="task-badge" style="background:#e8ecf4;color:#1B2B4B;">Obligatorisk</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Alle bedrifter i Norge må registreres i Enhetsregisteret. ENK registreres gratis via Altinn. AS koster ca. 5 500 kr å registrere (eller 2 784 kr digitalt via Altinn).</p>
+          <p>Etter registrering får du et organisasjonsnummer (9 siffer) som brukes i all kommunikasjon med myndigheter, banker og kunder.</p>
+          <ul class="checklist">
+            <li>Logg inn på Altinn med BankID</li>
+            <li>Velg "Registrere ny virksomhet"</li>
+            <li>Velg riktig næringskode (NACE-kode) for din bransje</li>
+            <li>Fyll inn nødvendig informasjon og send inn</li>
+            <li>Vent på organisasjonsnummeret (vanligvis 1–5 dager for ENK)</li>
+          </ul>
+          <div class="task-links">
+            <a href="https://www.altinn.no" target="_blank" rel="noopener" class="task-link">🔗 Altinn.no</a>
+            <a href="https://www.brreg.no" target="_blank" rel="noopener" class="task-link">🔗 Brønnøysundregistrene</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#1B2B4B">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#e8ecf4;color:#1B2B4B;">3</div>
+          <div class="task-title">Forstå MVA (merverdiavgift)</div>
+          <span class="task-badge" style="background:#e8ecf4;color:#1B2B4B;">Viktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Du er pliktig til å registrere deg for MVA når omsetningen overstiger <strong>50 000 kr</strong> i løpet av 12 måneder. Frivillig registrering kan gjøres tidligere.</p>
+          <p>Når du er MVA-registrert, legger du 25% MVA på fakturaene dine (15% for mat, 12% for persontransport/overnatting). Du kan trekke fra MVA du betaler på innkjøp.</p>
+          <div class="task-tip"><strong>Praktisk:</strong> Registrer deg for MVA via Altinn. Du må levere MVA-melding 6 ganger i året (annenhver måned).</div>
+          <div class="task-links">
+            <a href="https://www.skatteetaten.no/bedrift-og-organisasjon/merverdiavgift/" target="_blank" rel="noopener" class="task-link">🔗 Skatteetaten: MVA</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#1B2B4B">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#e8ecf4;color:#1B2B4B;">4</div>
+          <div class="task-title">Åpne bedriftskonto i banken</div>
+          <span class="task-badge" style="background:#e8ecf4;color:#1B2B4B;">Obligatorisk</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Det er ikke lovpålagt for ENK, men det anbefales sterkt å holde privatøkonomi og bedriftsøkonomi adskilt. For AS er det obligatorisk.</p>
+          <p>Sammenlign tilbud fra DNB, Nordea, Sparebank og nyere aktører som Stacc og Fiken Bank. Se på månedspris, kortgebyr og integrasjoner med regnskapssystem.</p>
+          <ul class="checklist">
+            <li>Ta med organisasjonsnummer og gyldig legitimasjon</li>
+            <li>Spør om bedriftskort og nettbank-tilgang</li>
+            <li>Undersøk om banken har integrasjon med ditt regnskapssystem</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#1B2B4B">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#e8ecf4;color:#1B2B4B;">5</div>
+          <div class="task-title">Lag en enkel forretningsplan</div>
+          <span class="task-badge" style="background:#e8ecf4;color:#1B2B4B;">Anbefalt</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>En forretningsplan trenger ikke å være 30 sider. Faktisk er en enkel 1–2 siders plan du faktisk bruker, mye bedre enn en detaljert plan du aldri ser på igjen.</p>
+          <p><strong>Dekk disse punktene:</strong></p>
+          <ul class="checklist">
+            <li>Hva er produktet/tjenesten? (1 avsnitt)</li>
+            <li>Hvem er kunden og hva er problemet du løser?</li>
+            <li>Hvordan tjener du penger? (prismodell)</li>
+            <li>Hvem er konkurrentene og hva gjør deg bedre?</li>
+            <li>Hva er de tre viktigste målene de neste 12 månedene?</li>
+          </ul>
+          <div class="task-tip"><strong>Tips:</strong> Innovasjon Norge har gratis maler og veiledning for forretningsplaner.</div>
+          <div class="task-links">
+            <a href="https://www.innovasjonnorge.no" target="_blank" rel="noopener" class="task-link">🔗 Innovasjon Norge</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#1B2B4B">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#e8ecf4;color:#1B2B4B;">6</div>
+          <div class="task-title">Sjekk bransje-spesifikke krav og tillatelser</div>
+          <span class="task-badge" style="background:#e8ecf4;color:#1B2B4B;">Situasjonsavhengig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Noen bransjer krever spesielle tillatelser, sertifiseringer eller godkjenninger. Det er viktig å sjekke dette <em>før</em> du starter drift.</p>
+          <p><strong>Eksempler:</strong></p>
+          <ul class="checklist">
+            <li>Mat og drikke: Serveringsbevilling, mattilsynsgodkjenning</li>
+            <li>Helse og velferd: Autorisasjon fra Helsedirektoratet</li>
+            <li>Bygg og håndverk: Godkjenning som ansvarlig foretak (SAK10)</li>
+            <li>Transport: Drosjeløyve eller godkjenning fra Statens vegvesen</li>
+            <li>Finans og forsikring: Konsesjon fra Finanstilsynet</li>
+          </ul>
+          <div class="task-links">
+            <a href="https://www.altinn.no/starte-og-drive/starte/tillatelser-og-lisenser/" target="_blank" rel="noopener" class="task-link">🔗 Altinn: Tillatelser</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FASE 3 ======================== -->
+<section class="phase-section phase-3" id="fase-3">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-header-icon" style="background:#f0fdf4;">💰</div>
+      <div class="phase-header-content">
+        <div class="phase-label" style="color:#15803d;">Fase 3</div>
+        <h2>Økonomi og finansiering</h2>
+        <p>God økonomiforvaltning er det som skiller bedrifter som overlever fra de som ikke gjør det. Denne fasen gir deg kontroll over tallene, hjelper deg å finne finansiering og sørger for at du ikke ender opp med ubehagelige overraskelser fra skatteetaten.</p>
+      </div>
+    </div>
+
+    <div class="tasks-list">
+
+      <div class="task-item" style="--phase-color:#15803d">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f0fdf4;color:#15803d;">1</div>
+          <div class="task-title">Sett opp et regnskapssystem</div>
+          <span class="task-badge" style="background:#f0fdf4;color:#15803d;">Obligatorisk</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Alle næringsdrivende i Norge er lovpålagt å føre regnskap. Det finnes mange gode og rimelige norske regnskapsprogram.</p>
+          <p><strong>Populære valg:</strong></p>
+          <ul class="checklist">
+            <li><strong>Fiken</strong> — Brukervennlig, perfekt for ENK og små AS. Fra 149 kr/mnd.</li>
+            <li><strong>Tripletex</strong> — Mer avansert, god for voksende bedrifter.</li>
+            <li><strong>Visma eAccounting</strong> — Stor aktør med mange integrasjoner.</li>
+            <li><strong>24SevenOffice</strong> — Alt-i-ett for bedrifter som trenger mer.</li>
+          </ul>
+          <div class="task-tip"><strong>Tips:</strong> Koble regnskapssystemet til banken din for automatisk import av transaksjoner — sparer deg for timer av manuelt arbeid.</div>
+          <div class="task-links">
+            <a href="https://www.fiken.no" target="_blank" rel="noopener" class="task-link">🔗 Fiken</a>
+            <a href="https://www.tripletex.no" target="_blank" rel="noopener" class="task-link">🔗 Tripletex</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#15803d">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f0fdf4;color:#15803d;">2</div>
+          <div class="task-title">Lag et budsjett for de neste 12 månedene</div>
+          <span class="task-badge" style="background:#f0fdf4;color:#15803d;">Viktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Et budsjett er ikke en prognose over hva du tror vil skje — det er et styringsverktøy for å ta bevisste beslutninger om penger. Vær realistisk, ikke optimistisk.</p>
+          <p><strong>Et enkelt budsjett inneholder:</strong></p>
+          <ul class="checklist">
+            <li>Forventede inntekter per måned (konservativt estimat)</li>
+            <li>Faste kostnader: leie, programvare, forsikring, lønn</li>
+            <li>Variable kostnader: varekjøp, markedsføring, reise</li>
+            <li>Break-even-punkt: Når dekker inntektene kostnadene?</li>
+            <li>Cash flow: Når har du penger på konto og når har du ikke?</li>
+          </ul>
+          <div class="task-tip"><strong>Huskeregel:</strong> Estimer inntekter lavere enn du tror og kostnader høyere enn du tror. Virkeligheten er som regel midt imellom.</div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#15803d">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f0fdf4;color:#15803d;">3</div>
+          <div class="task-title">Søk om etablerertilskudd fra Innovasjon Norge</div>
+          <span class="task-badge" style="background:#f0fdf4;color:#15803d;">Mulighet</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Innovasjon Norge tilbyr etablerertilskudd til nye bedrifter med vekstpotensial. Tilskuddet kan være opptil 750 000 kr, men er typisk lavere for nyetablerere i startfasen.</p>
+          <p>Støtten gis i to etapper: Avklaringsfase (opptil 100 000 kr) og gjennomføringsfase. Du trenger en forretningsplan og et budsjett.</p>
+          <ul class="checklist">
+            <li>Sjekk om bedriften din oppfyller kriteriene (vekst, innovasjon, norsk)</li>
+            <li>Ta kontakt med ditt lokale Innovasjon Norge-kontor</li>
+            <li>Forbered forretningsplan, budsjett og CV</li>
+            <li>Søk gjennom Innovasjon Norges søknadsportal</li>
+          </ul>
+          <div class="task-links">
+            <a href="https://www.innovasjonnorge.no/no/tjenester/starte/etablerertilskudd/" target="_blank" rel="noopener" class="task-link">🔗 Etablerertilskudd</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#15803d">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f0fdf4;color:#15803d;">4</div>
+          <div class="task-title">Vurder oppstartslån fra Innovasjon Norge</div>
+          <span class="task-badge" style="background:#f0fdf4;color:#15803d;">Mulighet</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Oppstartslånet fra Innovasjon Norge er designet for gründere som ikke får lån i vanlig bank. Renten er gunstig og vilkårene er fleksible.</p>
+          <p>Lånet kan brukes til alt fra produktutvikling og markedsføring til utstyr og driftskapital. Maksbeløpet varierer, men er typisk opptil 500 000–2 000 000 kr avhengig av fase.</p>
+          <div class="task-tip"><strong>Tips:</strong> Oppstartslån kan kombineres med etablerertilskudd. Søk via Innovasjon Norges lokale kontor.</div>
+          <div class="task-links">
+            <a href="https://www.innovasjonnorge.no/no/tjenester/finansiering/lan/" target="_blank" rel="noopener" class="task-link">🔗 Oppstartslån</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#15803d">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f0fdf4;color:#15803d;">5</div>
+          <div class="task-title">Forstå skatt for næringsdrivende</div>
+          <span class="task-badge" style="background:#f0fdf4;color:#15803d;">Viktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Som næringsdrivende betaler du skatt av overskuddet i bedriften. Du bør sette av penger løpende slik at du ikke blir tatt på sengen ved skatteoppgjøret.</p>
+          <p><strong>Viktige punkter:</strong></p>
+          <ul class="checklist">
+            <li>ENK: Overskudd beskattes som personinntekt (opp til ca. 47% inkl. trygdeavgift)</li>
+            <li>AS: Selskapsskatten er 22%. Utbytte beskattes i tillegg med ca. 37.8%</li>
+            <li>Sett av ca. 30–35% av overskuddet til skatt fortløpende</li>
+            <li>Lever næringsoppgave ved siden av ordinær skattemelding</li>
+            <li>Husk at du kan trekke fra legitimerte forretningskostnader</li>
+          </ul>
+          <div class="task-links">
+            <a href="https://www.skatteetaten.no/bedrift-og-organisasjon/" target="_blank" rel="noopener" class="task-link">🔗 Skatteetaten</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#15803d">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f0fdf4;color:#15803d;">6</div>
+          <div class="task-title">Sett opp fakturering og betalingsrutiner</div>
+          <span class="task-badge" style="background:#f0fdf4;color:#15803d;">Praktisk</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>En faktura skal inneholde spesifikke lovpålagte opplysninger i Norge. Sørg for at du har rutiner for å sende fakturaer raskt og følge opp betalinger.</p>
+          <ul class="checklist">
+            <li>Fakturaen skal ha: ditt org.nr., kundens info, dato, forfallsdato, beskrivelse, beløp, MVA (hvis registrert)</li>
+            <li>Standardbetalingsfrist er 14–30 dager</li>
+            <li>Send purring automatisk ved forfall</li>
+            <li>Vurder å bruke betalingsplattformer som Vipps Bedrift, Stripe eller Nets</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#15803d">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#f0fdf4;color:#15803d;">7</div>
+          <div class="task-title">Utforsk andre finansieringskilder</div>
+          <span class="task-badge" style="background:#f0fdf4;color:#15803d;">Mulighet</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>I tillegg til Innovasjon Norge finnes det mange andre finansieringskilder for norske gründere.</p>
+          <ul class="checklist">
+            <li><strong>NAV Tilskudd til etablering:</strong> For dagpengemottakere som vil starte bedrift</li>
+            <li><strong>Skattefunn:</strong> Skattefradrag for FoU-prosjekter (fra Skattefunn.no)</li>
+            <li><strong>Kommunale næringsfond:</strong> Sjekk din kommunes tilbud</li>
+            <li><strong>Fylkeskommunen:</strong> Mange tilbyr egne tilskudd og støtteordninger</li>
+            <li><strong>Enova:</strong> Støtte til grønne og energieffektive løsninger</li>
+            <li><strong>Business angels / investorer:</strong> For teknologi og skalerbare bedrifter</li>
+          </ul>
+          <div class="task-links">
+            <a href="https://www.skattefunn.no" target="_blank" rel="noopener" class="task-link">🔗 Skattefunn</a>
+            <a href="https://www.enova.no" target="_blank" rel="noopener" class="task-link">🔗 Enova</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== FASE 4 ======================== -->
+<section class="phase-section phase-4" id="fase-4">
+  <div class="container">
+    <div class="phase-header">
+      <div class="phase-header-icon" style="background:#fff7ed;">📣</div>
+      <div class="phase-header-content">
+        <div class="phase-label" style="color:#c2410c;">Fase 4</div>
+        <h2>Markedsføring og salg</h2>
+        <p>Du har produktet, selskapet og økonomien på plass. Nå handler alt om å nå ut til de rette menneskene og gjøre dem til betalende kunder. Markedsføring handler ikke om å rope høyest — det handler om å finne riktig kanal og kommunisere riktig budskap.</p>
+      </div>
+    </div>
+
+    <div class="tasks-list">
+
+      <div class="task-item" style="--phase-color:#c2410c">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#fff7ed;color:#c2410c;">1</div>
+          <div class="task-title">Definer din ideelle kundeprofil (IKP)</div>
+          <span class="task-badge" style="background:#fff7ed;color:#c2410c;">Grunnleggende</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Hvem er det som ville fått mest verdi av produktet ditt, ville betalt raskest, og ville anbefalt deg til andre? Det er din ideelle kundeprofil.</p>
+          <p>Å definere IKP hjelper deg å prioritere hvem du kontakter, hva du sier og hvilke kanaler du bruker. Alt annet er sløsing med tid og penger.</p>
+          <ul class="checklist">
+            <li>Beskriv demografien (alder, yrke, geografi)</li>
+            <li>Beskriv atferden (hva de leser, følger, deltar på)</li>
+            <li>Beskriv smertepunktene (hva holder dem oppe om natten?)</li>
+            <li>Beskriv kjøpsatferden (hvem beslutter, hva stopper dem?)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#c2410c">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#fff7ed;color:#c2410c;">2</div>
+          <div class="task-title">Bygg en enkel nettside eller landing page</div>
+          <span class="task-badge" style="background:#fff7ed;color:#c2410c;">Viktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Du trenger ikke en fancy nettside, men du trenger et sted der potensielle kunder kan sjekke ut bedriften din, forstå hva du tilbyr og komme i kontakt med deg.</p>
+          <p><strong>Hva nettsiden din MÅ inneholde:</strong></p>
+          <ul class="checklist">
+            <li>Tydelig overskrift som forklarer hva du gjør og hvem du gjør det for</li>
+            <li>Hva kunden oppnår (ikke bare hva du selger)</li>
+            <li>Sosiale bevis: kundeomtaler, antall kunder, resultater</li>
+            <li>Enkel kontaktmulighet (kontaktskjema, telefon eller e-post)</li>
+            <li>Tydelig CTA (call-to-action) på forsiden</li>
+          </ul>
+          <div class="task-tip"><strong>Verktøy:</strong> WordPress, Webflow, Squarespace eller Wix er gode valg for de fleste. For nettbutikk: Shopify eller WooCommerce.</div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#c2410c">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#fff7ed;color:#c2410c;">3</div>
+          <div class="task-title">Velg riktige markedskanaler</div>
+          <span class="task-badge" style="background:#fff7ed;color:#c2410c;">Strategisk</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Den vanligste feilen er å spre seg over alle kanaler. Start med én eller to kanaler og bli god der — så ekspanderer du.</p>
+          <p><strong>Kanaler og hva de passer for:</strong></p>
+          <ul class="checklist">
+            <li><strong>LinkedIn:</strong> B2B, tjenestesalg, rekruttering og faglig innhold</li>
+            <li><strong>Instagram/TikTok:</strong> Produkter, livsstil, B2C med visuelt innhold</li>
+            <li><strong>Google Ads/SEO:</strong> Når kunder aktivt søker etter det du tilbyr</li>
+            <li><strong>E-post:</strong> Bygge relasjoner med leads og eksisterende kunder</li>
+            <li><strong>Nettverksbygging:</strong> Lokale bedriftsnettverk, bransjeorganisasjoner</li>
+            <li><strong>Kald outreach:</strong> Direkte kontakt med potensielle kunder via LinkedIn/e-post</li>
+          </ul>
+          <div class="task-tip"><strong>Tips:</strong> Finn ut <em>hvor målgruppen din allerede er</em> — og møt dem der, i stedet for å prøve å dra dem til en ny plattform.</div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#c2410c">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#fff7ed;color:#c2410c;">4</div>
+          <div class="task-title">Bygg en salgsprosess fra A til Å</div>
+          <span class="task-badge" style="background:#fff7ed;color:#c2410c;">Viktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Salg er ikke magi — det er en prosess du kan lære og forbedre. Definer hvert steg fra en ukjent person til en betalende kunde.</p>
+          <p><strong>En enkel salgstrakt:</strong></p>
+          <ul class="checklist">
+            <li><strong>Oppmerksomhet:</strong> De hører om deg for første gang</li>
+            <li><strong>Interesse:</strong> De besøker nettsiden, følger deg på sosiale medier</li>
+            <li><strong>Vurdering:</strong> De sammenligner deg med konkurrenter</li>
+            <li><strong>Kjøp:</strong> De tar kontakt og kjøper</li>
+            <li><strong>Lojalitet:</strong> De kjøper igjen og anbefaler deg videre</li>
+          </ul>
+          <div class="task-tip"><strong>Praktisk:</strong> Bruk et enkelt CRM-verktøy for å holde styr på leads. HubSpot CRM og Pipedrive er gode valg — begge har gratisnivå.</div>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#c2410c">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#fff7ed;color:#c2410c;">5</div>
+          <div class="task-title">Lag en innholdsstrategi</div>
+          <span class="task-badge" style="background:#fff7ed;color:#c2410c;">Langsiktig</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>Innholdsmarkedsføring (bloggposter, videoer, innlegg på sosiale medier) bygger tillit og tiltrekker kunder uten at du betaler for hvert klikk. Det er en langsiktig investering.</p>
+          <p>Start enkelt: Hva er de fem vanligste spørsmålene kundene dine stiller? Lag ett innlegg per spørsmål. Det er det enkleste innholdet som fungerer best.</p>
+          <ul class="checklist">
+            <li>Velg én primærkanal (f.eks. LinkedIn eller blog)</li>
+            <li>Lag innhold som svarer på ekte spørsmål fra målgruppen</li>
+            <li>Post konsistent — én gang i uken er bedre enn ti ganger den første uken og deretter ingenting</li>
+            <li>Bruk analyser for å se hva som fungerer</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="task-item" style="--phase-color:#c2410c">
+        <div class="task-header" onclick="toggleTask(this)">
+          <div class="task-num" style="background:#fff7ed;color:#c2410c;">6</div>
+          <div class="task-title">Be om anmeldelser og referanser</div>
+          <span class="task-badge" style="background:#fff7ed;color:#c2410c;">Undervurdert</span>
+          <svg class="task-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="task-body">
+          <p>De aller fleste kjøpsavgjørelser påvirkes av hva andre sier. Fornøyde kunder er din beste markedsføring — men de ber sjelden om å gi anmeldelse uten at du spør.</p>
+          <p>Sett opp en enkel rutine: Etter at en kunde er fornøyd, send en kort e-post og be om en anmeldelse på Google, Trustpilot eller LinkedIn. Det tar dem 2 minutter, men er gull for deg.</p>
+          <ul class="checklist">
+            <li>Opprett Google My Business-profil og be om Google-anmeldelser</li>
+            <li>Be fornøyde kunder om LinkedIn-anbefalinger</li>
+            <li>Samle og vis frem casestudier og suksesshistorier</li>
+            <li>Innfør et referanseprogram der kunder får noe for å anbefale deg</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center mt-48">
+      <a href="quiz.html" class="btn btn-primary">Finn din fase med quizen →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">Gründer<span style="color:var(--accent)">stien</span></div>
+        <p>Vi hjelper norske gründere å komme fra idé til vellykket bedrift med konkret, steg-for-steg veiledning.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasjon</h4>
+        <ul>
+          <li><a href="index.html">Hjem</a></li>
+          <li><a href="quiz.html">Quiz</a></li>
+          <li><a href="guide.html">Guide</a></li>
+          <li><a href="ressurser.html">Ressurser</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Fasene</h4>
+        <ul>
+          <li><a href="#fase-1">Idé og validering</a></li>
+          <li><a href="#fase-2">Registrering</a></li>
+          <li><a href="#fase-3">Økonomi</a></li>
+          <li><a href="#fase-4">Markedsføring</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Nyttige lenker</h4>
+        <ul>
+          <li><a href="https://www.altinn.no" target="_blank" rel="noopener">Altinn</a></li>
+          <li><a href="https://www.innovasjonnorge.no" target="_blank" rel="noopener">Innovasjon Norge</a></li>
+          <li><a href="https://www.brreg.no" target="_blank" rel="noopener">Brønnøysundregistrene</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Gründerstien.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleTask(header) {
+    const item = header.parentElement;
+    item.classList.toggle('open');
+  }
+
+  function setActiveTab(el) {
+    document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Highlight active tab on scroll
+  const phases = ['fase-1','fase-2','fase-3','fase-4'];
+  const tabs = document.querySelectorAll('.phase-tab');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        const idx = phases.indexOf(id);
+        if (idx >= 0) {
+          tabs.forEach(t => t.classList.remove('active'));
+          tabs[idx].classList.add('active');
+        }
+      }
+    });
+  }, { threshold: 0.3 });
+
+  phases.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>
+</body>
+</html>

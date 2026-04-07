@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gründerstien – Fra idé til vellykket bedrift</title>
+  <meta name="description" content="Norges enkleste veiledning for nye gründere. Finn ut hvor du er i prosessen og få konkret hjelp til neste steg." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet" />
+  <style>
+
+    /* ── HERO ──────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(150deg, #060C18 0%, #0E1B2E 45%, #1B2B4B 100%);
+      color: #fff;
+      padding: 130px 0 110px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient gold glow — upper right */
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(ellipse at center,
+        rgba(245,166,35,.10) 0%,
+        rgba(245,166,35,.04) 35%,
+        transparent 65%);
+      top: -320px;
+      right: -280px;
+      pointer-events: none;
+    }
+
+    /* Subtle warm glow — lower left */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(ellipse at center,
+        rgba(245,166,35,.05) 0%,
+        transparent 60%);
+      bottom: -150px;
+      left: -100px;
+      pointer-events: none;
+    }
+
+    /* Decorative concentric rings */
+    .hero-rings {
+      position: absolute;
+      right: -80px;
+      top: 50%;
+      transform: translateY(-52%);
+      width: 580px;
+      height: 580px;
+      pointer-events: none;
+      opacity: .6;
+    }
+    .hero-rings svg { width: 100%; height: 100%; }
+
+    /* Thin horizontal gold rule */
+    .hero-rule {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .hero-rule-line {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent), rgba(245,166,35,.3));
+    }
+    .hero-rule-text {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(245,166,35,.7);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.6rem, 5.5vw, 4.4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -.5px;
+      color: #fff;
+      margin-bottom: 28px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, #F5A623 30%, #f7cc80 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.02rem;
+      color: rgba(255,255,255,.62);
+      line-height: 1.8;
+      margin-bottom: 48px;
+      max-width: 500px;
+      font-weight: 400;
+    }
+
+    .hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+    /* Premium CTA button */
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 17px 38px;
+      background: linear-gradient(135deg, #F5A623 0%, #e8951a 100%);
+      color: #0A0F1A;
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: .4px;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .25s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 4px 32px rgba(245,166,35,.28), 0 1px 0 rgba(255,255,255,.12) inset;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(245,166,35,.4), 0 1px 0 rgba(255,255,255,.12) inset;
+      color: #0A0F1A;
+      background: linear-gradient(135deg, #f7b43a 0%, #F5A623 100%);
+    }
+    .btn-ghost-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: transparent;
+      color: rgba(255,255,255,.75);
+      font-size: .95rem;
+      font-weight: 600;
+      letter-spacing: .3px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,.18);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .25s cubic-bezier(.4,0,.2,1);
+    }
+    .btn-ghost-white:hover {
+      border-color: rgba(245,166,35,.5);
+      color: var(--accent);
+      background: rgba(245,166,35,.05);
+    }
+
+    /* Stats row */
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      margin-top: 72px;
+      padding-top: 48px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+    .hero-stat {
+      flex: 1;
+      padding-right: 40px;
+      border-right: 1px solid rgba(255,255,255,.07);
+    }
+    .hero-stat:last-child { border-right: none; padding-right: 0; padding-left: 40px; }
+    .hero-stat:not(:first-child):not(:last-child) { padding-left: 40px; }
+    .hero-stat strong {
+      display: block;
+      font-size: 2.1rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #F5A623, #f7cc80);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .hero-stat span { font-size: .82rem; color: rgba(255,255,255,.42); letter-spacing: .2px; }
+
+    /* ── DIVIDER SECTION INTRO ─────────────────────── */
+    .section-intro {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 56px;
+    }
+    .section-intro-line {
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── HOW IT WORKS ──────────────────────────────── */
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .step-cell {
+      background: #fff;
+      padding: 44px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-bg-num {
+      position: absolute;
+      right: 14px;
+      top: 10px;
+      font-size: 6rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--primary);
+      opacity: .04;
+      user-select: none;
+      pointer-events: none;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .step-index {
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(27,43,75,.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 22px;
+    }
+    .step-cell h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+    .step-cell p { font-size: .88rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* ── PHASES PREVIEW ────────────────────────────── */
+    .phases-preview { background: #F7F6F3; }
+    .phases-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 44px;
+    }
+    .phases-header-right {
+      text-align: right;
+      font-size: .9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .phase-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      background: #e0ddd6;
+      border: 1px solid #e0ddd6;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .phase-card {
+      background: #fff;
+      padding: 36px 32px;
+      transition: all var(--transition);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+    .phase-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .phase-card:hover { background: #FAFAF8; color: inherit; }
+    .phase-card:hover::before { transform: scaleY(1); }
+    .phase-num-label {
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(245,166,35,.8);
+      margin-bottom: 14px;
+    }
+    .phase-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+    .phase-card p { font-size: .87rem; color: var(--text-muted); line-height: 1.68; margin-bottom: 18px; }
+    .phase-arrow {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--primary);
+      opacity: .35;
+      transition: opacity var(--transition);
+    }
+    .phase-card:hover .phase-arrow { opacity: .85; }
+
+    /* ── FEATURES ──────────────────────────────────── */
+    .features-wrap {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .features-intro .section-title { margin-bottom: 16px; }
+    .features-intro p { font-size: .93rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 32px; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px 48px;
+    }
+    .feature-item { border-top: 1px solid var(--border); padding-top: 22px; }
+    .feature-accent-line {
+      width: 18px;
+      height: 1px;
+      background: var(--accent);
+      margin-bottom: 14px;
+    }
+    .feature-item h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .feature-item p { font-size: .85rem; color: var(--text-muted); line-height: 1.68; }
+
+    /* ── CTA STRIP ─────────────────────────────────── */
+    .cta-strip {
+      background: linear-gradient(150deg, #060C18 0%, #0E1B2E 50%, #1B2B4B 100%);
+      color: #fff;
+      padding: 96px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-strip::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(ellipse at center,
+        rgba(245,166,35,.08) 0%,
+        transparent 60%);
+      top: 50%;
+      right: -200px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .cta-strip-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 56px;
+    }
+    .cta-label {
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(245,166,35,.6);
+      margin-bottom: 14px;
+    }
+    .cta-strip h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+    .cta-strip p { font-size: .93rem; color: rgba(255,255,255,.52); line-height: 1.7; }
+
+    /* ── RESPONSIVE ────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-rings { display: none; }
+      .steps-row { grid-template-columns: 1fr; gap: 1px; }
+      .phases-header { grid-template-columns: 1fr; }
+      .phases-header-right { text-align: left; }
+      .features-wrap { grid-template-columns: 1fr; gap: 40px; }
+      .cta-strip-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 700px) {
+      .hero { padding: 90px 0 72px; }
+      .hero-stat { padding: 0 20px; }
+      .hero-stat:first-child { padding-left: 0; }
+      .hero-stats { gap: 0; margin-top: 48px; padding-top: 36px; }
+      .phase-cards { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">Gründer<span>stien</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Hjem</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="guide.html">Guide</a></li>
+      <li><a href="ressurser.html">Ressurser</a></li>
+      <li><a href="quiz.html" class="nav-cta">Start nå →</a></li>
+    </ul>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Meny">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+  <!-- Decorative rings -->
+  <div class="hero-rings" aria-hidden="true">
+    <svg viewBox="0 0 580 580" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="290" cy="290" r="272" stroke="rgba(245,166,35,0.09)" stroke-width="1"/>
+      <circle cx="290" cy="290" r="210" stroke="rgba(245,166,35,0.07)" stroke-width="1"/>
+      <circle cx="290" cy="290" r="148" stroke="rgba(245,166,35,0.06)" stroke-width="1"/>
+      <circle cx="290" cy="290" r="86" stroke="rgba(245,166,35,0.06)" stroke-width="1"/>
+      <circle cx="290" cy="290" r="28" fill="rgba(245,166,35,0.07)"/>
+      <!-- Subtle diagonal cross-lines through center -->
+      <line x1="110" y1="290" x2="470" y2="290" stroke="rgba(245,166,35,0.04)" stroke-width="1"/>
+      <line x1="290" y1="110" x2="290" y2="470" stroke="rgba(245,166,35,0.04)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-rule">
+        <div class="hero-rule-line"></div>
+        <span class="hero-rule-text">Gratis veiledning for norske gründere</span>
+      </div>
+
+      <h1>
+        Din suksess<br>
+        <em>starter her.</em>
+      </h1>
+
+      <p class="hero-desc">
+        Fra den første idéen til din første kunde — vi gir deg den konkrete
+        veiledningen og verktøyene du trenger for å bygge noe du er stolt av.
+        Tilpasset norske regler. Steg for steg.
+      </p>
+
+      <div class="hero-actions">
+        <a href="quiz.html" class="btn-gold">
+          Ta quizen — finn din vei
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="guide.html" class="btn-ghost-white">Se guiden</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong>4</strong>
+          <span>Faser med steg-for-steg hjelp</span>
+        </div>
+        <div class="hero-stat">
+          <strong>30+</strong>
+          <span>Konkrete oppgaver og verktøy</span>
+        </div>
+        <div class="hero-stat">
+          <strong>100%</strong>
+          <span>Gratis — ingen registrering</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="container">
+    <div class="section-intro">
+      <div class="section-intro-line"></div>
+      <p class="section-label" style="margin:0">Slik fungerer det</p>
+    </div>
+    <h2 class="section-title" style="margin-bottom:48px;max-width:400px">Tre steg til din suksess</h2>
+    <div class="steps-row">
+      <div class="step-cell">
+        <div class="step-bg-num">01</div>
+        <div class="step-index">1</div>
+        <h3>Ta quizen</h3>
+        <p>Svar på fem raske spørsmål om hvor du er i prosessen. Det tar under to minutter.</p>
+      </div>
+      <div class="step-cell">
+        <div class="step-bg-num">02</div>
+        <div class="step-index">2</div>
+        <h3>Få din anbefaling</h3>
+        <p>Du får en personlig oversikt over hva som er viktigst for deg akkurat nå.</p>
+      </div>
+      <div class="step-cell">
+        <div class="step-bg-num">03</div>
+        <div class="step-index">3</div>
+        <h3>Følg guiden</h3>
+        <p>Gå gjennom konkrete oppgaver i din fase og huk dem av når du er ferdig.</p>
+      </div>
+    </div>
+    <div class="text-center mt-48">
+      <a href="quiz.html" class="btn btn-secondary">Start med quizen →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES PREVIEW -->
+<section class="phases-preview">
+  <div class="container">
+    <div class="phases-header">
+      <div>
+        <div class="section-intro" style="margin-bottom:16px">
+          <div class="section-intro-line"></div>
+          <p class="section-label" style="margin:0">Steg-for-steg guide</p>
+        </div>
+        <h2 class="section-title" style="margin-bottom:0">Fire faser —<br>én tydelig vei</h2>
+      </div>
+      <div class="phases-header-right">
+        Fra den første idéen til din første<br>
+        kunde. Alt du trenger å vite.
+      </div>
+    </div>
+    <div class="phase-cards">
+
+      <a href="guide.html#fase-1" class="phase-card">
+        <div class="phase-num-label">— Fase 01</div>
+        <h3>Idé og validering</h3>
+        <p>Test om idéen din løser et problem folk vil betale for — før du investerer tid og penger.</p>
+        <span class="phase-arrow">5 oppgaver →</span>
+      </a>
+
+      <a href="guide.html#fase-2" class="phase-card">
+        <div class="phase-num-label">— Fase 02</div>
+        <h3>Registrering og det formelle</h3>
+        <p>Velg riktig selskapsform, registrer deg i Brønnøysund og forstå skattemyndighetenes krav.</p>
+        <span class="phase-arrow">6 oppgaver →</span>
+      </a>
+
+      <a href="guide.html#fase-3" class="phase-card">
+        <div class="phase-num-label">— Fase 03</div>
+        <h3>Økonomi og finansiering</h3>
+        <p>Sett opp bokføring, forstå budsjettering og finn de rette tilskuddene for din bedrift.</p>
+        <span class="phase-arrow">7 oppgaver →</span>
+      </a>
+
+      <a href="guide.html#fase-4" class="phase-card">
+        <div class="phase-num-label">— Fase 04</div>
+        <h3>Markedsføring og salg</h3>
+        <p>Nå ut til de rette kundene, bygg merkevaren din og sett opp en salgskanal som fungerer.</p>
+        <span class="phase-arrow">6 oppgaver →</span>
+      </a>
+
+    </div>
+    <div class="text-center mt-32">
+      <a href="guide.html" class="btn btn-secondary">Se hele guiden</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE HIGHLIGHTS -->
+<section>
+  <div class="container">
+    <div class="features-wrap">
+      <div class="features-intro">
+        <div class="section-intro" style="margin-bottom:16px">
+          <div class="section-intro-line"></div>
+          <p class="section-label" style="margin:0">Hvorfor Gründerstien</p>
+        </div>
+        <h2 class="section-title">Alt du trenger, på ett sted</h2>
+        <p>Vi hjelper norske gründere å komme fra idé til vellykket bedrift med konkret, steg-for-steg veiledning tilpasset norske regler og ordninger.</p>
+        <a href="quiz.html" class="btn-gold" style="font-size:.88rem;padding:14px 28px">Kom i gang gratis →</a>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-accent-line"></div>
+          <h3>Tilpasset deg</h3>
+          <p>Quizen sørger for at du fokuserer på oppgavene som er relevante for din fase i prosessen.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-accent-line"></div>
+          <h3>Norsk kontekst</h3>
+          <p>All veiledning er tilpasset norske regler og tjenester — Altinn, Brønnøysund og Innovasjon Norge.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-accent-line"></div>
+          <h3>Konkrete oppgaver</h3>
+          <p>Ingen vage råd. Bare handlingsrettede oppgaver du kan huke av etterhvert som du fullfører dem.</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-accent-line"></div>
+          <h3>Ressursbibliotek</h3>
+          <p>Direkte lenker til viktige norske tjenester, verktøy og støtteordninger — samlet på ett sted.</p>
+        </div>
+<div class="feature-item">
+          <div class="feature-accent-line"></div>
+          <h3>Kom raskt i gang</h3>
+          <p>Designet for å hjelpe deg fremover — ikke for å oversvømme deg med informasjon du ikke trenger nå.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<section class="cta-strip">
+  <div class="container">
+    <div class="cta-strip-inner">
+      <div>
+        <p class="cta-label">Neste steg</p>
+        <h2>Klar til å bygge<br>noe du er stolt av?</h2>
+        <p>Ta den korte quizen og finn ut nøyaktig hva du bør fokusere på akkurat nå.</p>
+      </div>
+      <a href="quiz.html" class="btn-gold" style="padding:18px 42px;font-size:1rem;">
+        Ta quizen gratis
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">Gründer<span style="color:var(--accent)">stien</span></div>
+        <p>Vi hjelper norske gründere å komme fra idé til vellykket bedrift med konkret, steg-for-steg veiledning.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasjon</h4>
+        <ul>
+          <li><a href="index.html">Hjem</a></li>
+          <li><a href="quiz.html">Quiz</a></li>
+          <li><a href="guide.html">Guide</a></li>
+          <li><a href="ressurser.html">Ressurser</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Fasene</h4>
+        <ul>
+          <li><a href="guide.html#fase-1">Idé og validering</a></li>
+          <li><a href="guide.html#fase-2">Registrering</a></li>
+          <li><a href="guide.html#fase-3">Økonomi</a></li>
+          <li><a href="guide.html#fase-4">Markedsføring</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Nyttige lenker</h4>
+        <ul>
+          <li><a href="https://www.altinn.no" target="_blank" rel="noopener">Altinn</a></li>
+          <li><a href="https://www.innovasjonnorge.no" target="_blank" rel="noopener">Innovasjon Norge</a></li>
+          <li><a href="https://www.brreg.no" target="_blank" rel="noopener">Brønnøysundregistrene</a></li>
+          <li><a href="https://www.skatteetaten.no" target="_blank" rel="noopener">Skatteetaten</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Gründerstien. Laget med ❤️ for norske gründere.</span>
+      <span>All veiledning er generell og erstatter ikke profesjonell rådgivning.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz – Finn din fase | Gründerstien</title>
+  <meta name="description" content="Svar på fem spørsmål og finn ut nøyaktig hvilken fase du er i og hva du bør fokusere på nå." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .quiz-hero {
+      background: linear-gradient(135deg, #0e1b2e 0%, #1B2B4B 100%);
+      color: #fff;
+      padding: 64px 0;
+      text-align: center;
+    }
+    .quiz-hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 12px; letter-spacing: -.5px; }
+    .quiz-hero p { font-size: 1.05rem; color: rgba(255,255,255,.8); }
+
+    .quiz-wrapper {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .quiz-progress {
+      padding: 32px 0 0;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: .88rem;
+      color: var(--text-muted);
+    }
+    .progress-meta strong { color: var(--text); }
+
+    /* QUESTION CARD */
+    .question-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-top: 28px;
+      box-shadow: var(--shadow);
+      animation: slideIn .35s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .question-num {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .question-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .question-hint {
+      font-size: .9rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    /* OPTIONS */
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+      background: var(--bg);
+    }
+    .option:hover {
+      border-color: var(--primary);
+      background: #f0f6ff;
+    }
+    .option.selected {
+      border-color: var(--primary);
+      background: #e8f0fd;
+    }
+    .option-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .option-content { flex: 1; }
+    .option-label { font-weight: 600; font-size: .95rem; margin-bottom: 3px; }
+    .option-desc { font-size: .83rem; color: var(--text-muted); line-height: 1.4; }
+    .option-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+    .option.selected .option-check {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    .option.selected .option-check::after {
+      content: '✓';
+      color: #fff;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    /* NAV BUTTONS */
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-bottom: 64px;
+    }
+    .btn-back {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: .92rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 0;
+      transition: color var(--transition);
+    }
+    .btn-back:hover { color: var(--text); }
+    .btn-next {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition);
+      opacity: .4;
+      pointer-events: none;
+    }
+    .btn-next.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .btn-next.active:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    /* RESULT */
+    .result-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      margin-top: 32px;
+      margin-bottom: 64px;
+    }
+    .result-header {
+      padding: 40px;
+      color: #fff;
+      text-align: center;
+    }
+    .result-emoji { font-size: 4rem; margin-bottom: 16px; }
+    .result-header h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    .result-header p { font-size: 1rem; opacity: .88; }
+
+    .result-body { padding: 40px; }
+    .result-body h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+
+    .task-list { list-style: none; margin-bottom: 32px; }
+    .task-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .95rem;
+    }
+    .task-list li:last-child { border-bottom: none; }
+    .task-check {
+      width: 22px; height: 22px;
+      background: var(--bg-soft);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: .75rem;
+      margin-top: 1px;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">Gründer<span>stien</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Hjem</a></li>
+      <li><a href="quiz.html" class="active">Quiz</a></li>
+      <li><a href="guide.html">Guide</a></li>
+      <li><a href="ressurser.html">Ressurser</a></li>
+      <li><a href="quiz.html" class="nav-cta">Start nå →</a></li>
+    </ul>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Meny">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<section class="quiz-hero">
+  <div class="container">
+    <h1>Finn din fase</h1>
+    <p>Svar på fem korte spørsmål og få en personlig anbefaling for din situasjon</p>
+  </div>
+</section>
+
+<div class="quiz-wrapper">
+  <div class="quiz-progress">
+    <div class="progress-meta">
+      <strong id="progressLabel">Spørsmål 1 av 5</strong>
+      <span id="progressPct">20%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:20%"></div>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="quizContent">
+    <!-- Q1 -->
+    <div class="question-card" id="q1">
+      <div class="question-num">Spørsmål 1 av 5</div>
+      <div class="question-text">Hvor er du i gründerprosessen?</div>
+      <div class="question-hint">Velg det alternativet som passer best for deg nå.</div>
+      <div class="options">
+        <div class="option" data-q="1" data-val="idea" onclick="selectOption(this)">
+          <div class="option-icon">💡</div>
+          <div class="option-content">
+            <div class="option-label">Jeg har en idé</div>
+            <div class="option-desc">Men jeg er ikke helt sikker på om den er god nok, eller hvor jeg skal begynne.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="1" data-val="validating" onclick="selectOption(this)">
+          <div class="option-icon">🔍</div>
+          <div class="option-content">
+            <div class="option-label">Jeg holder på å validere idéen</div>
+            <div class="option-desc">Jeg tester idéen, snakker med potensielle kunder eller bygger en prototyp.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="1" data-val="registered" onclick="selectOption(this)">
+          <div class="option-icon">📋</div>
+          <div class="option-content">
+            <div class="option-label">Jeg har registrert et selskap</div>
+            <div class="option-desc">Selskapet eksisterer, men jeg er usikker på økonomi, regnskap eller hva jeg gjør videre.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="1" data-val="running" onclick="selectOption(this)">
+          <div class="option-icon">🚀</div>
+          <div class="option-content">
+            <div class="option-label">Jeg er i gang, men sitter fast</div>
+            <div class="option-desc">Bedriften er startet, men jeg sliter med å nå ut til kunder eller vokse videre.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-card hidden" id="q2">
+      <div class="question-num">Spørsmål 2 av 5</div>
+      <div class="question-text">Hva er din største utfordring akkurat nå?</div>
+      <div class="question-hint">Velg det som kjennes mest relevant for deg.</div>
+      <div class="options">
+        <div class="option" data-q="2" data-val="idea_validation" onclick="selectOption(this)">
+          <div class="option-icon">🎯</div>
+          <div class="option-content">
+            <div class="option-label">Vet ikke om idéen min er god</div>
+            <div class="option-desc">Jeg er usikker på om folk faktisk vil kjøpe det jeg vil tilby.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="2" data-val="legal" onclick="selectOption(this)">
+          <div class="option-icon">⚖️</div>
+          <div class="option-content">
+            <div class="option-label">Det formelle og juridiske</div>
+            <div class="option-desc">Selskapsform, registrering, kontrakter og MVA forvirrer meg.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="2" data-val="money" onclick="selectOption(this)">
+          <div class="option-icon">💰</div>
+          <div class="option-content">
+            <div class="option-label">Finansiering og økonomi</div>
+            <div class="option-desc">Jeg vet ikke hvordan jeg skal finansiere oppstarten eller holde orden på regnskapet.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="2" data-val="marketing" onclick="selectOption(this)">
+          <div class="option-icon">📣</div>
+          <div class="option-content">
+            <div class="option-label">Markedsføring og å nå kunder</div>
+            <div class="option-desc">Jeg sliter med å finne og tiltrekke meg betalende kunder.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-card hidden" id="q3">
+      <div class="question-num">Spørsmål 3 av 5</div>
+      <div class="question-text">Har du snakket med potensielle kunder om idéen din?</div>
+      <div class="question-hint">Direkte samtaler — ikke bare delt i sosiale medier.</div>
+      <div class="options">
+        <div class="option" data-q="3" data-val="yes_many" onclick="selectOption(this)">
+          <div class="option-icon">✅</div>
+          <div class="option-content">
+            <div class="option-label">Ja, mer enn 10 samtaler</div>
+            <div class="option-desc">Jeg har god innsikt i hva potensielle kunder trenger og vil betale for.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="3" data-val="yes_few" onclick="selectOption(this)">
+          <div class="option-icon">🤝</div>
+          <div class="option-content">
+            <div class="option-label">Ja, noen samtaler</div>
+            <div class="option-desc">Jeg har snakket med noen, men trenger mer tilbakemelding.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="3" data-val="no" onclick="selectOption(this)">
+          <div class="option-icon">💬</div>
+          <div class="option-content">
+            <div class="option-label">Nei, ikke ennå</div>
+            <div class="option-desc">Jeg har ikke tatt samtalen direkte med potensielle kunder ennå.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-card hidden" id="q4">
+      <div class="question-num">Spørsmål 4 av 5</div>
+      <div class="question-text">Hvilken bransje eller type bedrift tenker du på?</div>
+      <div class="question-hint">Hjelper oss å gi mer relevante råd.</div>
+      <div class="options">
+        <div class="option" data-q="4" data-val="service" onclick="selectOption(this)">
+          <div class="option-icon">🛠️</div>
+          <div class="option-content">
+            <div class="option-label">Tjenestebedrift</div>
+            <div class="option-desc">Konsulentarbeid, håndverk, frisør, regnskap, rådgivning o.l.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="4" data-val="product" onclick="selectOption(this)">
+          <div class="option-icon">📦</div>
+          <div class="option-content">
+            <div class="option-label">Produktbedrift</div>
+            <div class="option-desc">Du lager eller selger fysiske produkter — nettbutikk, produksjon o.l.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="4" data-val="digital" onclick="selectOption(this)">
+          <div class="option-icon">💻</div>
+          <div class="option-content">
+            <div class="option-label">Digitalt / teknologi</div>
+            <div class="option-desc">App, SaaS, nettsted, digital innhold, teknologiløsning o.l.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="4" data-val="unsure" onclick="selectOption(this)">
+          <div class="option-icon">🤔</div>
+          <div class="option-content">
+            <div class="option-label">Usikker / annet</div>
+            <div class="option-desc">Jeg vet ikke helt ennå, eller ingen av disse passer.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-card hidden" id="q5">
+      <div class="question-num">Spørsmål 5 av 5</div>
+      <div class="question-text">Hva er ditt viktigste mål de neste 3 månedene?</div>
+      <div class="question-hint">Velg det som er viktigst for deg nå.</div>
+      <div class="options">
+        <div class="option" data-q="5" data-val="confirm_idea" onclick="selectOption(this)">
+          <div class="option-icon">🎯</div>
+          <div class="option-content">
+            <div class="option-label">Bekrefte at idéen er levedyktig</div>
+            <div class="option-desc">Jeg vil vite at det finnes betalende kunder før jeg investerer mer.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="5" data-val="register" onclick="selectOption(this)">
+          <div class="option-icon">📋</div>
+          <div class="option-content">
+            <div class="option-label">Registrere og formalisere bedriften</div>
+            <div class="option-desc">Jeg vil ha alt på plass juridisk og administrativt.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="5" data-val="first_customer" onclick="selectOption(this)">
+          <div class="option-icon">🤝</div>
+          <div class="option-content">
+            <div class="option-label">Skaffe de første kundene</div>
+            <div class="option-desc">Jeg vil ha betalende kunder og begynne å generere inntekter.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+        <div class="option" data-q="5" data-val="scale" onclick="selectOption(this)">
+          <div class="option-icon">📈</div>
+          <div class="option-content">
+            <div class="option-label">Vokse og skalere</div>
+            <div class="option-desc">Jeg har kunder, men vil ha flere — og kanskje søke om støtte eller finansiering.</div>
+          </div>
+          <div class="option-check"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV BUTTONS -->
+  <div class="quiz-nav" id="quizNav">
+    <button class="btn-back hidden" id="btnBack" onclick="prevQuestion()">
+      ← Forrige
+    </button>
+    <span></span>
+    <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+      Neste spørsmål
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="resultSection" class="hidden">
+    <div class="result-card" id="resultCard"></div>
+    <div style="text-align:center;padding-bottom:48px;">
+      <button onclick="resetQuiz()" class="btn btn-secondary">Ta quizen på nytt</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">Gründer<span style="color:var(--accent)">stien</span></div>
+        <p>Vi hjelper norske gründere å komme fra idé til vellykket bedrift med konkret, steg-for-steg veiledning.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasjon</h4>
+        <ul>
+          <li><a href="index.html">Hjem</a></li>
+          <li><a href="quiz.html">Quiz</a></li>
+          <li><a href="guide.html">Guide</a></li>
+          <li><a href="ressurser.html">Ressurser</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Fasene</h4>
+        <ul>
+          <li><a href="guide.html#fase-1">Idé og validering</a></li>
+          <li><a href="guide.html#fase-2">Registrering</a></li>
+          <li><a href="guide.html#fase-3">Økonomi</a></li>
+          <li><a href="guide.html#fase-4">Markedsføring</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Nyttige lenker</h4>
+        <ul>
+          <li><a href="https://www.altinn.no" target="_blank" rel="noopener">Altinn</a></li>
+          <li><a href="https://www.innovasjonnorge.no" target="_blank" rel="noopener">Innovasjon Norge</a></li>
+          <li><a href="https://www.brreg.no" target="_blank" rel="noopener">Brønnøysundregistrene</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Gründerstien.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const answers = {};
+  let currentQ = 1;
+  const totalQ = 5;
+
+  function selectOption(el) {
+    const q = el.dataset.q;
+    const val = el.dataset.val;
+    answers[q] = val;
+    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const btn = document.getElementById('btnNext');
+    btn.classList.add('active');
+    if (currentQ === totalQ) {
+      btn.textContent = '';
+      btn.innerHTML = 'Se resultatet <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    }
+  }
+
+  function nextQuestion() {
+    if (!answers[currentQ]) return;
+    if (currentQ === totalQ) { showResult(); return; }
+    document.getElementById(`q${currentQ}`).classList.add('hidden');
+    currentQ++;
+    document.getElementById(`q${currentQ}`).classList.remove('hidden');
+    updateProgress();
+    document.getElementById('btnBack').classList.remove('hidden');
+    const btn = document.getElementById('btnNext');
+    btn.classList.remove('active');
+    btn.innerHTML = currentQ === totalQ
+      ? 'Se resultatet <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+      : 'Neste spørsmål <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    if (answers[currentQ]) btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function prevQuestion() {
+    if (currentQ === 1) return;
+    document.getElementById(`q${currentQ}`).classList.add('hidden');
+    currentQ--;
+    document.getElementById(`q${currentQ}`).classList.remove('hidden');
+    updateProgress();
+    if (currentQ === 1) document.getElementById('btnBack').classList.add('hidden');
+    const btn = document.getElementById('btnNext');
+    btn.innerHTML = currentQ === totalQ
+      ? 'Se resultatet <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+      : 'Neste spørsmål <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress() {
+    const pct = Math.round((currentQ / totalQ) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = `Spørsmål ${currentQ} av ${totalQ}`;
+    document.getElementById('progressPct').textContent = pct + '%';
+  }
+
+  function showResult() {
+    document.getElementById('quizContent').classList.add('hidden');
+    document.getElementById('quizNav').classList.add('hidden');
+    document.querySelector('.quiz-progress').classList.add('hidden');
+    document.getElementById('resultSection').classList.remove('hidden');
+
+    const stage = answers[1];
+    const challenge = answers[2];
+    const goal = answers[5];
+
+    let result = getResult(stage, challenge, goal);
+    document.getElementById('resultCard').innerHTML = result;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function getResult(stage, challenge, goal) {
+    // Determine primary recommendation
+    let phase, color, emoji, title, subtitle, tasks, link, linkText;
+
+    if (stage === 'idea' || challenge === 'idea_validation' || goal === 'confirm_idea') {
+      phase = 1; color = '#7c3aed'; emoji = '💡';
+      title = 'Du er i idé- og valideringsfasen';
+      subtitle = 'Det viktigste nå er å finne ut om idéen din faktisk løser et problem folk vil betale for — før du bruker mye tid og penger på oppbyggingen.';
+      tasks = [
+        'Skriv ned problemet du løser på én setning',
+        'Identifiser din målgruppe — hvem har dette problemet mest?',
+        'Gjennomfør 10 kundeintervjuer med potensielle kunder',
+        'Lag en enkel problemhypotese og test den',
+        'Finn ut hva folk bruker i dag som alternativ til løsningen din'
+      ];
+      link = 'guide.html#fase-1'; linkText = 'Se fase 1 i guiden';
+
+    } else if (stage === 'validating' || challenge === 'legal' || goal === 'register') {
+      phase = 2; color = '#1B2B4B'; emoji = '📋';
+      title = 'Du er klar for registrering og det formelle';
+      subtitle = 'Idéen er god nok til å formalisere. Nå handler det om å velge riktig selskapsform, registrere deg hos myndighetene og forstå hva du er forpliktet til.';
+      tasks = [
+        'Velg mellom ENK (enkeltpersonforetak) og AS (aksjeselskap)',
+        'Registrer bedriften i Enhetsregisteret via Altinn',
+        'Sett opp en bedriftskonto i banken',
+        'Forstå MVA-reglene og når du må registrere deg',
+        'Lag en enkel forretningsplan (1–2 sider holder)',
+        'Sjekk om du trenger spesielle tillatelser i din bransje'
+      ];
+      link = 'guide.html#fase-2'; linkText = 'Se fase 2 i guiden';
+
+    } else if (challenge === 'money' || stage === 'registered') {
+      phase = 3; color = '#15803d'; emoji = '💰';
+      title = 'Du trenger hjelp med økonomi og finansiering';
+      subtitle = 'Bedriften er registrert, men nå er det tid for å ta kontroll på tallene. God økonomiforvaltning er det som gjør at bedrifter overlever og vokser.';
+      tasks = [
+        'Sett opp et enkelt regnskapssystem (f.eks. Fiken eller Tripletex)',
+        'Lag et budsjett for de neste 6 månedene',
+        'Sjekk om du kvalifiserer for etablerertilskudd fra Innovasjon Norge',
+        'Undersøk om du kan søke om oppstartslån fra Innovasjon Norge',
+        'Forstå hva du kan trekke fra i skatt som næringsdrivende',
+        'Sett opp rutiner for fakturering og oppfølging',
+        'Vurder om du trenger en regnskapsfører'
+      ];
+      link = 'guide.html#fase-3'; linkText = 'Se fase 3 i guiden';
+
+    } else {
+      phase = 4; color = '#c2410c'; emoji = '📣';
+      title = 'Du er klar for markedsføring og vekst';
+      subtitle = 'Du har produktet/tjenesten og rammeverket på plass. Nå handler det om å nå ut til de rette kundene og bygge en salgsprosess som skalerer.';
+      tasks = [
+        'Definer din ideelle kundeprofil (IKP) tydelig',
+        'Velg 1–2 markedskanaler og fokuser alt der',
+        'Sett opp en enkel nettside eller landing page',
+        'Start med innholdsmarkedsføring i din bransje',
+        'Bygg et enkelt CRM-system for å følge opp leads',
+        'Lag en systematisk salgsprosess fra første kontakt til salg'
+      ];
+      link = 'guide.html#fase-4'; linkText = 'Se fase 4 i guiden';
+    }
+
+    const taskHTML = tasks.map(t => `
+      <li>
+        <div class="task-check">→</div>
+        <span>${t}</span>
+      </li>`).join('');
+
+    return `
+      <div class="result-header" style="background: linear-gradient(135deg, ${color}, ${color}dd);">
+        <div class="result-emoji">${emoji}</div>
+        <h2>${title}</h2>
+        <p>${subtitle}</p>
+      </div>
+      <div class="result-body">
+        <h3>Dine anbefalte neste steg:</h3>
+        <ul class="task-list">${taskHTML}</ul>
+        <div class="result-actions">
+          <a href="${link}" class="btn btn-primary">${linkText} →</a>
+          <a href="ressurser.html" class="btn btn-secondary">Se ressursbiblioteket</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function resetQuiz() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    currentQ = 1;
+    for (let i = 1; i <= totalQ; i++) {
+      document.getElementById(`q${i}`).classList.add('hidden');
+      document.querySelectorAll(`#q${i} .option`).forEach(o => o.classList.remove('selected'));
+    }
+    document.getElementById('q1').classList.remove('hidden');
+    document.getElementById('quizContent').classList.remove('hidden');
+    document.getElementById('quizNav').classList.remove('hidden');
+    document.querySelector('.quiz-progress').classList.remove('hidden');
+    document.getElementById('resultSection').classList.add('hidden');
+    document.getElementById('btnBack').classList.add('hidden');
+    document.getElementById('btnNext').classList.remove('active');
+    document.getElementById('btnNext').innerHTML = 'Neste spørsmål <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    updateProgress();
+    document.getElementById('progressFill').style.width = '20%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
